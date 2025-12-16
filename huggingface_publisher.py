@@ -17,14 +17,15 @@ def publish_dataset(hf_token, repo_id, dataset_files, readme_file="README.md", l
             shutil.copy(file_path, local_dir)
             print(f"Copied {file_path} to {local_dir}")
         else:
-            print(f"WARNING: File not found: {file_path}")
+            raise FileNotFoundError(f"Dataset file not found: {file_path}")
 
     # Copy README
-    if os.path.isfile(readme_file):
-        shutil.copy(readme_file, local_dir)
-        print(f"Copied {readme_file} to {local_dir}")
-    else:
-        print(f"WARNING: README file not found: {readme_file}")
+    if readme_file:
+        if os.path.isfile(readme_file):
+            shutil.copy(readme_file, local_dir)
+            print(f"Copied {readme_file} to {local_dir}")
+        else:
+            print(f"WARNING: README file not found: {readme_file}")
 
     # 3️⃣ Create repo if it doesn't exist
     api = HfApi()
@@ -47,18 +48,3 @@ def publish_dataset(hf_token, repo_id, dataset_files, readme_file="README.md", l
     print(f"Dataset successfully pushed: https://huggingface.co/datasets/{repo_id}")
 
 
-if __name__ == "__main__":
-    # Get token from environment variable for security
-    HF_TOKEN = os.getenv("HF_TOKEN")
-    if not HF_TOKEN:
-        raise ValueError("Please set HF_TOKEN environment variable with your Hugging Face token")
-    
-    REPO_ID = "omanyasa/bantu-lang-id"
-    FILES = [
-        "data/shona_en_lang_train.txt",
-        "data/shona_en_lang_valid.txt",
-        "data/shona_en_lang_test.txt"
-    ]
-    README = "README.md"
-
-    publish_dataset(HF_TOKEN, REPO_ID, FILES, readme_file=README)

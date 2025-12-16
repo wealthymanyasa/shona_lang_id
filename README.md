@@ -1,127 +1,83 @@
----
-license: cc-by-4.0
-language: ["en", "sn"]
-multilinguality: multilingual
-size_categories: 100K<n<1M
-task_categories: ["text-classification"]
-task_ids: ["language-identification"]
----
+# Language Services API
 
-# English–Shona Language ID Dataset
-
-A comprehensive dataset for language identification tasks containing English and Shona sentences, formatted for FastText training.
+This project provides a flexible and scalable FastAPI-based API for a variety of language-related tasks, including language identification, and publishing models and datasets to the Hugging Face Hub.
 
 ## Overview
 
-This dataset contains **763,546** labeled sentences in English and Shona languages, designed for training and evaluating language identification models. The data is cleaned, balanced, and formatted specifically for FastText-style supervised learning.
+The API is designed to be a central service for your language-processing needs. It's built with a modular structure, making it easy to add new features and evolve the application over time.
 
-## Dataset Structure
+### Core Features:
 
-```
-data/
-├── shona_en_lang_train.txt    # Training set (135 MB)
-├── shona_en_lang_valid.txt    # Validation set (16.9 MB)
-└── shona_en_lang_test.txt     # Test set (16.9 MB)
-```
+- **Language Identification**: An endpoint to identify the language of a given text.
+- **Hugging Face Integration**: Endpoints to publish datasets and models directly to the Hugging Face Hub.
+- **Scalable Architecture**: Built with FastAPI and Gunicorn for high performance and production readiness.
+- **Easy to Extend**: The modular design allows you to easily add new language-related services.
 
-## Data Format
+## Getting Started
 
-Each line in the dataset files follows the FastText format:
-```
-__label__en [English sentence]
-__label__shona [Shona sentence]
-```
+### Prerequisites
 
-**Example:**
-```
-__label__en It was about three o 'clock before we could take a break .
-__label__shona Ndakapindura kuti , " Hungu , Munyengetero waShe . "
-```
+- Python 3.8+
+- An environment variable manager (e.g., `python-dotenv`)
 
-## Dataset Statistics
+### Installation
 
-- **Total sentences:** 763,546
-- **Languages:** English (en), Shona (shona)
-- **Training set:** ~600,000 sentences
-- **Validation set:** ~80,000 sentences
-- **Test set:** ~80,000 sentences
-- **License:** CC BY 4.0
+1.  **Clone the repository:**
+    ```bash
+    git clone <your-repo-url>
+    cd <your-repo-name>
+    ```
 
-## Usage
+2.  **Install the dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### For FastText Training
+3.  **Set up your environment variables:**
+    Create a `.env` file in the root of the project and add your Hugging Face API token:
+    ```
+    HF_TOKEN="your-hugging-face-token"
+    ```
 
-```python
-import fasttext
+### Running the Application
 
-# Train a supervised language identification model
-model = fasttext.train_supervised(
-    input="data/shona_en_lang_train.txt",
-    epoch=25,
-    lr=1.0,
-    wordNgrams=2,
-    dim=100,
-    loss='softmax'
-)
+To run the application in a development environment, use the following command:
 
-# Test the model
-result = model.test("data/shona_en_lang_test.txt")
-print(f"Accuracy: {result[1]:.2f}%")
-
-# Predict language of new text
-text = "Hello, how are you?"
-prediction = model.predict(text)
-print(f"Language: {prediction[0][0].replace('__label__', '')}")
+```bash
+uvicorn main:app --reload
 ```
 
-### For Other ML Frameworks
+This will start the development server, and you can access the API at `http://127.0.0.1:8000`.
 
-The dataset can be easily adapted for scikit-learn, PyTorch, TensorFlow, or other machine learning frameworks by parsing the label and text components.
+For a production environment, you can use the provided Gunicorn configuration:
 
-## Publishing to Hugging Face
-
-The repository includes a script for publishing the dataset to Hugging Face Hub:
-
-```python
-from huggingface_publisher import publish_dataset
-
-# Publish dataset
-publish_dataset(
-    hf_token="your_hf_token",
-    repo_id="your-username/english-shona-langid",
-    dataset_files=[
-        "data/shona_en_lang_train.txt",
-        "data/shona_en_lang_valid.txt", 
-        "data/shona_en_lang_test.txt"
-    ],
-    readme_file="README.md"
-)
+```bash
+gunicorn -c gunicorn.py main:app
 ```
 
-## Dependencies
+## API Endpoints
 
-See `requirements.txt` for the complete list of dependencies. Key packages include:
+Once the application is running, you can access the interactive API documentation at `http://127.0.0.1:8000/docs`.
 
-- `huggingface_hub>=1.1.5` - For dataset publishing
-- `fasttext` - For model training (optional)
+Here's a summary of the available endpoints:
 
-## License
+-   **`POST /identify/`**: Identifies the language of a given text.
+    -   **Body**: `{"text": "your text here"}`
+-   **`POST /publish/dataset/`**: Publishes a dataset to the Hugging Face Hub.
+    -   **Body**: `{"repo_id": "your-repo-id", "dataset_files": ["path/to/file1.txt"], "readme_file": "path/to/README.md"}`
+-   **`POST /publish/model/`**: Publishes a model to the Hugging Face Hub.
+    -   **Body**: `{"repo_id": "your-repo-id", "model_path": "path/to/your/model"}`
 
-This dataset is released under the **Creative Commons Attribution 4.0 International License**. You are free to share, adapt, and use the dataset for any purpose, provided you give appropriate credit.
+## How to Extend the API
 
-## Citation
+The application is designed to be easily extended. To add a new feature:
 
-If you use this dataset in your research or projects, please cite:
+1.  **Create a new module** in the `app` directory (e.g., `app/summarization.py`).
+2.  **Implement your logic** in the new module.
+3.  **Add a new endpoint** in `main.py` that uses your new module.
 
-```
-English–Shona Language ID Dataset. (2025). 
-Available at: https://huggingface.co/datasets/omanyasa/english-shona-langid
-```
+This modular approach keeps the codebase clean and makes it easy to manage as the application grows.
 
 ## Contributing
 
-Contributions to improve the dataset are welcome. Please ensure any additions maintain the quality and format consistency of the existing data.
-
-## Acknowledgments
-
-This dataset was created to support language identification research and applications involving English and Shona languages, particularly for African NLP initiatives.
+Contributions are welcome! If you have ideas for new features or improvements, please open an issue or submit a pull request.
