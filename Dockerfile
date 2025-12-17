@@ -19,4 +19,4 @@ COPY ./app /code/app
 EXPOSE 8000
 
 # Run the application
-CMD ["gunicorn", "--chdir", "app", "-c", "gunicorn.py", "main:app"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -20,14 +20,40 @@ This file tracks the progress of building the Language Services API.
 - [x] **Update Documentation**: Created a general-purpose `README.md` for the API.
 - [x] **Create Progress Tracking File**: This `PROGRESS.md` file.
 
-## Phase 2: Feature Implementation (Up Next)
+## Phase 2: Feature Implementation (In Progress)
 
-- [ ] **Train Custom Language Identification Model**:
-  - [ ] Create a data processing script to prepare my 700k dataset for training.
-  - [ ] Choose a model architecture (e.g., FastText, or a transformer-based model from Hugging Face).
-  - [ ] Write a training script for the model.
-  - [ ] Train the model and evaluate its performance.
-  - [ ] Save the trained model artifacts.
+- [x] **Data Processing Pipeline**:
+  - [x] Created `app/data_processor.py` for dataset handling
+  - [x] Implemented text cleaning and preprocessing
+  - [x] Added train/validation/test splitting with stratification
+  - [x] Added logging and progress tracking
+  - [x] Created command-line interface for easy usage
+
+- [ ] **Model Development**:
+  - [ ] Choose model architecture:
+    - [ ] FastText (fast training, lightweight)
+    - [ ] DistilBERT (efficient transformer)
+    - [ ] XLM-RoBERTa (multilingual capabilities)
+  - [ ] Create model training script
+  - [ ] Implement training loop with early stopping
+  - [ ] Add model evaluation metrics
+  - [ ] Implement model saving/loading
+
+- [ ] **Model Training & Evaluation**:
+  - [ ] Train initial model on full dataset
+  - [ ] Perform hyperparameter tuning
+  - [ ] Evaluate model performance:
+    - [ ] Accuracy, precision, recall, F1-score
+    - [ ] Confusion matrix
+    - [ ] Per-class metrics
+  - [ ] Analyze misclassifications
+  - [ ] Optimize for production deployment
+
+- [ ] **Integration & Testing**:
+  - [ ] Update API endpoints to use new model
+  - [ ] Add model versioning
+  - [ ] Implement model performance monitoring
+  - [ ] Add automated testing for model inference
 
 - [ ] **Integrate Custom Model into API**:
   - [ ] Load the trained model in `app/language_identification.py`.
