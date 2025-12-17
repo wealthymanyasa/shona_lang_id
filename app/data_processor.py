@@ -59,19 +59,20 @@ class DataProcessor:
         """Clean and preprocess text data.
         
         Args:
-            text: Input text to clean
+            text: Input text to clean (can be any type)
             
         Returns:
-            Cleaned text
+            Cleaned text or empty string if input is not a string
         """
+        # Return empty string for non-string inputs
         if not isinstance(text, str):
             return ""
             
         # Basic text cleaning
         text = text.strip()
-        # Add more cleaning steps as needed
         
-        return text
+        # Return the text if not empty after stripping, otherwise return empty string
+        return text if text else ""
     
     def preprocess_data(self, df: pd.DataFrame, 
                        text_column: str = "text",
@@ -135,6 +136,13 @@ class DataProcessor:
         if val_size > 0:
             # Calculate the ratio for the second split
             val_ratio = val_size / (1 - test_size)
+            
+            # Ensure we have enough samples for the split
+            if len(train_val_df) * val_ratio < 1:
+                # If we don't have enough samples for a proper validation set,
+                # just return all data as training and empty validation
+                return train_val_df, pd.DataFrame(), test_df
+                
             train_df, val_df = train_test_split(
                 train_val_df,
                 test_size=val_ratio,
